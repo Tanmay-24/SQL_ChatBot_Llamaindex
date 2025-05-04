@@ -1,21 +1,29 @@
-# PDF-Demo-Chatbot
+# SQL_ChatBot_LlamaIndex
 
-A system for extracting, processing, and querying construction project PDF documents using vector search.
+A natural language interface for querying SQL databases using LlamaIndex and LLMs.
 
 ## Overview
 
-This project provides tools to:
-- Extract content from PDF documents containing construction project specifications and submittals
-- Process and transform the extracted data
-- Store document embeddings in Milvus vector database
-- Query the documents through a vector search API
+This project provides a conversational interface to query SQL databases using natural language. It leverages:
+- LlamaIndex for query processing
+- Large Language Models for text-to-SQL conversion
+- Query validation and correction capabilities
+
+## Features
+
+- Convert natural language questions to SQL queries
+- Query validation to ensure accurate responses
+- Automatic retry mechanism for failed queries
+- Support for multiple tables and complex queries
+- Handles SQL database schema understanding
 
 ## Setup
 
 ### Prerequisites
 
 - Python 3.x
-- Docker and Docker Compose
+- Access to a SQL database
+- OpenAI API key
 
 ### Installation
 
@@ -24,34 +32,45 @@ This project provides tools to:
 ```
 pip install -r requirements.txt
 ```
-3. Start Milvus and related services:
+3. Set up your OpenAI API key as an environment variable:
 ```
-docker-compose up -d
+export OPENAI_API_KEY=your_api_key_here
 ```
 
 ## Usage
 
-The project includes several Jupyter notebooks that demonstrate different parts of the workflow:
+The project includes a Jupyter notebook (`llama_index/v1.ipynb`) that demonstrates the workflow:
 
-- `pdf_extract.ipynb` - Extract text from PDF documents
-- `pdfcontent_extract_footer_based.ipynb` - Extract content with footer-based processing
-- `Vectordb.ipynb` - Work with the vector database
-- `service_test.ipynb` - Test the service endpoints
+1. Connect to your SQL database
+2. Define the database schema
+3. Configure the query engine
+4. Create an agent to handle natural language queries
+5. Query your database with natural language questions
 
 ## Dependencies
 
-- fastapi - Web API framework
-- uvicorn - ASGI server
-- milvus - Vector database
-- transformers - For embedding generation
+- llama-index - Core framework for the chatbot
+- langchain, langchain_openai - LLM integration
+- sqlalchemy - SQL database connectivity
+- openai - OpenAI API integration
+- fastapi, uvicorn - For API deployment (optional)
 - pandas, numpy - Data processing
-- torch - Machine learning backend
-- towhee - Data processing pipeline
+- plotly, matplotlib, kaleido - For visualization (optional)
 
-## Architecture
+## Example
 
-The system uses a Docker-based deployment with:
-- Milvus standalone server
-- MinIO for object storage
-- etcd for metadata storage
+```python
+# Connect to database
+sql_database = SQLDatabase(engine=engine, schema="YourSchema")
+
+# Create query engine
+sql_query_engine = NLSQLTableQueryEngine(
+    sql_database=sql_database,
+    tables=["YourTables"],
+    verbose=True
+)
+
+# Run queries
+response = agent.chat("What is the total sales for January 2023?")
+```
 
